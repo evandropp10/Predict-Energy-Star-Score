@@ -18,8 +18,7 @@ def resultToInt(x):
 
     return xint
 
-def trainTest(dftt, x, y):
-    print("3")
+def trainTest(dftt, x, y, dense):
     # dftt - DF Train and Test
     ## SPlit Dataset to train and test
     
@@ -33,7 +32,7 @@ def trainTest(dftt, x, y):
     # create model
 
     model = Sequential()
-    model.add(Dense(12, input_dim=6, activation='relu'))
+    model.add(Dense(12, input_dim=dense, activation='relu'))
     model.add(Dense(8, activation='relu'))
     model.add(Dense(1, activation='linear'))
     
@@ -83,7 +82,7 @@ def trainPredict(dft, dfp, x, y):
 
 
 ############# teste
-
+'''
 from sklearn import metrics
 
 import preProcessor
@@ -100,3 +99,4 @@ y = "ENERGY STAR Score"
 print(">>> Model31 - Perceptron")
 dfPrModel02 = trainTest(dfTrain, x, y)
 print('MAE Model 32:', metrics.mean_absolute_error(dfPrModel02['Test'],dfPrModel02['Prediction']))
+'''
