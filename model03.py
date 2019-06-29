@@ -6,6 +6,7 @@ from keras.models import Sequential
 from keras.layers import Dense
 from keras.preprocessing.text import one_hot
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import MinMaxScaler
 
 
 def resultToInt(x):
@@ -21,8 +22,16 @@ def resultToInt(x):
 def trainTest(dftt, x, y, dense):
     # dftt - DF Train and Test
     ## SPlit Dataset to train and test
+
+    X = dftt[x]
+    Y = dftt[y]
     
-    x_train, x_test, y_train, y_test = train_test_split(dftt[x], dftt[y], test_size=0.20, random_state=101)
+    scale = MinMaxScaler()
+    X = scale.fit_transform(X)
+    Y = scale.fit_transform(Y)
+    
+
+    x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size=0.20, random_state=101)
     
     x_arrTrain = np.array(x_train)
     x_arrTest = np.array(x_test)
@@ -39,14 +48,20 @@ def trainTest(dftt, x, y, dense):
     # Compile model
     model.compile(loss='mse', optimizer='adam')
 
-    model.fit(x_arrTrain, y_arrTrain, epochs=150, verbose=0)
+    model.fit(x_arrTrain, y_arrTrain, epochs=150, verbose=1)
 
     prediction = model.predict(x_arrTest)
 
+    result_test = scale.inverse_transform(y_test)
+    result_prediction = scale.inverse_transform(prediction)
+
     result = pd.DataFrame(columns=['Test', 'Prediction'])
-    result['Test'] = y_test
-    result['Prediction'] = prediction
+
+
+    result['Test'] = result_test.reshape((-1,1))[:,0]
+    result['Prediction'] = result_prediction.reshape((-1,1))
     result['Prediction'] = result['Prediction'].apply(resultToInt)
+    
     return result
     
     
